@@ -59,7 +59,7 @@ $.extend( mw.Api.prototype, {
 					var	i, l,
 						list = data.query.usercontribs;
 					for(i=0, l = list.length; i < l; i++ ){
-						if( /Rever(?:tendo|tidas|são)|Desf(?:eita|iz)/g.test( list[i].comment ) ){
+						if( /Rever(?:tendo|tidas|são)|Desf(?:eita|iz)/gi.test( list[i].comment ) ){
 							total += 1;
 						}
 					}
