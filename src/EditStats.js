@@ -1,3 +1,4 @@
+/*jslint browser: true, white: true, plusplus: true, todo: true */
 /**
  * Edit statistics
  * @author: [[User:Helder.wiki]]
@@ -8,9 +9,8 @@
  * - Incluir botões para preencher campos com listas obtidas da API
  * - Facilitar a seleção de datas com o plugin "datepicker" do jQuery
  */
-/*jslint browser: true, white: true, plusplus: true, todo: true */
-/*global jQuery, mediaWiki, jsMsg */
-( function ( mw, $, jsMsg ) {
+/*global jQuery, mediaWiki */
+( function ( mw, $ ) {
 'use strict';
 
 $.extend( mw.Api.prototype, {
@@ -84,7 +84,7 @@ getRevertStats = function( userList, from, to ){
 		wikitable = '{| class="wikitable sortable" style="float:left;"\n|+ De ' +
 			from + ' a ' + to + '\n|-\n! Editor || Total\n',
 		addUserRevertsToTable = function( userName ){
-			jsMsg('Estimando o número de reversões feitas entre ' + from + ' e ' + to + ' por ' + userName + '...');
+			mw.util.jsMessage('Estimando o número de reversões feitas entre ' + from + ' e ' + to + ' por ' + userName + '...');
 			api.getTotalRevertsByUser( userName, from, to )
 			.done( function( total ){
 				var i;
@@ -145,7 +145,7 @@ getStatsForListOfUsers = function( list ){
 run = function( list ){
 	getStatsForListOfUsers( list )
 	.done(function( wikiCode ){
-		jsMsg( '<pre>== Resultado ==\n' + wikiCode + '</pre>' );
+		mw.util.jsMessage( '<pre>== Resultado ==\n' + wikiCode + '</pre>' );
 	});
 },
 load = function( e ){
@@ -159,7 +159,7 @@ load = function( e ){
 		})
 		.click( function(){
 			$button.prop('disabled', true);
-			run( $('#stats-list').val().split('\n') ); 
+			run( $('#stats-list').val().split('\n') );
 		} ),
 		$list = $('<textarea />', {
 			id: 'stats-list',
@@ -188,4 +188,4 @@ if ( mw.config.get( 'wgPageName' ) === 'Wikipédia:Estatísticas' ) {
 	$( addLink );
 }
 
-}( mediaWiki, jQuery, jsMsg ) );
+}( mediaWiki, jQuery ) );
