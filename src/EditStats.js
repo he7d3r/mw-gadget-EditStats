@@ -84,7 +84,7 @@ getRevertStats = function( userList, from, to ){
 		wikitable = '{| class="wikitable sortable" style="float:left;"\n|+ De ' +
 			from + ' a ' + to + '\n|-\n! Editor || Total\n',
 		addUserRevertsToTable = function( userName ){
-			mw.util.jsMessage('Estimando o número de reversões feitas entre ' + from + ' e ' + to + ' por ' + userName + '...');
+			$('#stats-result').text('Estimando o número de reversões feitas entre ' + from + ' e ' + to + ' por ' + userName + '...');
 			api.getTotalRevertsByUser( userName, from, to )
 			.done( function( total ){
 				var i;
@@ -106,50 +106,56 @@ getRevertStats = function( userList, from, to ){
 
 	return statsDeferred.promise();
 },
-getStatsForListOfUsers = function( list ){
+getStatsForListOfUsers = function( users, periods ){
 	var	listDeferred = $.Deferred(),
 		stats = '',
 		periodId = 0,
-		periods = [
-			{
-				from: '2011-01-01T00:00:00Z',
-				to: '2011-01-07T23:59:59Z'
-			},{
-				from: '2011-01-08T00:00:00Z',
-				to: '2011-01-14T23:59:59Z'
-			}/*,{
-				from: '2012-01-12T00:00:00Z',
-				to: '2012-04-11T23:59:59Z'
-			},{
-				from: '2012-04-12T00:00:00Z',
-				to: '2012-07-11T23:59:59Z'
-			}*/
-		],
-		addStatsForPeriod = function( period ){
-			getRevertStats( list, period.from, period.to )
+		addStatsForPeriod = function( from, to ){
+			getRevertStats( users, from, to )
 			.done(function( wikitable ){
 				stats += '\n' + wikitable;
-				periodId++;
-				if( periodId < periods.length){
-					addStatsForPeriod( periods[periodId] );
+				periodId += 2;
+				if( periodId + 1 < periods.length){
+					addStatsForPeriod( periods[ periodId ], periods[ periodId + 1 ] );
 				} else{
 					listDeferred.resolve( stats );
 				}
 			})
 			.fail( listDeferred.reject );
 		};
-	addStatsForPeriod( periods[periodId] );
+	addStatsForPeriod( periods[ periodId ], periods[ periodId + 1 ] );
 
 	return listDeferred.promise();
 },
-run = function( list ){
-	getStatsForListOfUsers( list )
+run = function( users, periods ){
+	getStatsForListOfUsers( users, periods )
 	.done(function( wikiCode ){
-		mw.util.jsMessage( '<pre>== Resultado ==\n' + wikiCode + '</pre>' );
+		$('#stats-result')
+			.text( '== Resultado ==\n' + wikiCode )
+			.show();
+		$('#stats-button')
+			.prop('disabled', false);
 	});
 },
 load = function( e ){
-	var $button = $('<input />', {
+	var $config = $('<div id="stats-config"></div>'),
+		$result = $('<pre id="stats-result"></pre>').hide(),
+		$periodList = $('<textarea />', {
+			id: 'stats-period-list',
+			name: 'stats-period-list',
+			rows: 10,
+			tabindex: 1
+		}).text(
+			'2011-01-01T00:00:00Z\n2011-01-07T23:59:59Z\n' +
+			'2011-01-08T00:00:00Z\n2011-01-14T23:59:59Z'
+		),
+		$userList = $('<textarea />', {
+			id: 'stats-user-list',
+			name: 'stats-user-list',
+			rows: 10,
+			tabindex: 1
+		}).text( mw.config.get( 'wgUserName' ) + '\nFulano\nCiclano' ),
+		$button = $('<input />', {
 			id: 'stats-button',
 			name: 'stats-button',
 			type: 'submit',
@@ -159,20 +165,23 @@ load = function( e ){
 		})
 		.click( function(){
 			$button.prop('disabled', true);
-			run( $('#stats-list').val().split('\n') );
-		} ),
-		$list = $('<textarea />', {
-			id: 'stats-list',
-			name: 'stats-list',
-			rows: 10,
-			tabindex: 1
-		}).text( 'Fulano\nCiclano' );
+			$('#stats-result').empty();
+			run(
+				$('#stats-user-list').val().split('\n'),
+				$('#stats-period-list').val().split('\n')
+			);
+		} );
 
 	e.preventDefault();
-	$('#mw-content-text')
-	.prepend( $button )
-	.prepend( $list )
-	.prepend('<p>Lista de editores (um item em cada linha):</p>');
+	$config
+		.append('<p>Lista de editores (um item em cada linha):</p>')
+		.append( $userList )
+		.append('<p>Lista de períodos (um item em cada linha, alternando' +
+			' entre o início e o fim de cada período):</p>')
+		.append( $periodList )
+		.append( $button )
+		.append( $result );
+	$('#mw-content-text').prepend( $config );
 },
 addLink = function(){
 	$( mw.util.addPortletLink(
