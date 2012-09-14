@@ -58,12 +58,11 @@ $.extend( mw.Api.prototype, {
 				.done( function ( data ) {
 					var	i, l,
 						list = data.query.usercontribs;
-					/* for(i=0, l = list.length; i < l; i++ ){
+					for(i=0, l = list.length; i < l; i++ ){
 						if( /Rever(?:tendo|tidas|são)|Desf(?:eita|iz)/gi.test( list[i].comment ) ){
 							total += 1;
 						}
-					} */
-					total += list.length;
+					}
 					if( data['query-continue']){
 						doRequest( data['query-continue'].usercontribs.ucstart );
 					} else {
