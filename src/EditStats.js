@@ -3,7 +3,6 @@
  * Edit statistics
  * @author: Helder (https://github.com/he7d3r)
  * @license: CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0/>
- * @tracking: [[Special:GlobalUsage/User:Helder.wiki/Tools/EditStats.js]] ([[File:User:Helder.wiki/Tools/EditStats.js]])
  * TODO:
  * - Contar tanto reversões como edições normais
  * - Gerar uma única tabela, com cada período em uma coluna
