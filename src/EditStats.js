@@ -1,4 +1,3 @@
-/*jslint browser: true, white: true, plusplus: true, todo: true */
 /**
  * Edit statistics
  * @author: Helder (https://github.com/he7d3r)
@@ -9,7 +8,6 @@
  * - Incluir botões para preencher campos com listas obtidas da API
  * - Facilitar a seleção de datas com o plugin "datepicker" do jQuery
  */
-/*global jQuery, mediaWiki */
 ( function ( mw, $ ) {
 'use strict';
 
