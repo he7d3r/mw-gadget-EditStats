@@ -45,7 +45,8 @@
 					ucuser: userName,
 					ucdir: 'newer',
 					ucprop: 'comment',
-					uclimit: 5000
+					uclimit: 5000,
+					rawcontinue: 1
 				},
 				total = 0,
 				doRequest = function ( ucstart ) {
